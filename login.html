@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login | DocDost</title>
+
+<link rel="stylesheet" href="css/login.css">
+
+</head>
+
+<body>
+
+<a href="index.html" style="display: inline-block; padding: 10px 15px; background: #2563eb; color: white; text-decoration: none; border-radius: 5px; font-family: Arial, sans-serif; font-size: 14px; position: absolute; top: 20px; left: 20px; z-index: 9999; cursor: pointer;">⬅ Back to Home</a>
+<div class="background-animation"></div>
+
+<div class="login-wrapper">
+
+<div class="login-card">
+
+<div class="logo-area">
+
+<a href="index.html">
+<img src="assets/images/logo.png" class="logo-icon">
+<img src="assets/images/name.png" class="logo-text">
+</a>
+
+</div>
+
+<div class="tabs">
+
+<button id="loginTab" class="active">Login</button>
+<button id="registerTab">Register</button>
+
+</div>
+
+
+<!-- LOGIN FORM -->
+
+<form id="loginForm" class="form active">
+
+<div class="input-group">
+
+<input type="email" required>
+<label>Email Address</label>
+
+</div>
+
+<div class="input-group password-group">
+
+<input type="password" id="password" required>
+<label>Password</label>
+
+<span class="toggle-password" id="togglePassword">👁</span>
+
+</div>
+
+<div class="remember">
+
+<label>
+<input type="checkbox"> Remember Me
+</label>
+
+<a href="#">Forgot Password?</a>
+
+</div>
+
+<button type="submit" class="login-btn">Login</button>
+
+<div class="divider">or login with</div>
+
+<div class="social-login">
+
+<button onclick="alert('⚠️ Google Login is currently under maintenance. Please use your Username and Password to login.')" class="social-btn google-btn">
+    Continue with Google
+</button>
+
+<button onclick="alert('⚠️ Facebook Login is currently unavailable due to server upgrades. Please use normal login.')" class="social-btn fb-btn">
+     Continue with Facebook
+</button>
+
+</div>
+
+</form>
+
+
+<!-- REGISTER FORM -->
+
+<form id="registerForm" class="form">
+
+<div class="input-group">
+
+<input type="text" required>
+<label>Full Name</label>
+
+</div>
+
+<div class="input-group">
+
+<input type="email" required>
+<label>Email</label>
+
+</div>
+
+<div class="input-group">
+
+<input type="tel" required>
+<label>Phone</label>
+
+</div>
+
+<div class="input-group">
+
+<input type="password" required>
+<label>Password</label>
+
+</div>
+
+<button class="login-btn">Create Account</button>
+
+</form>
+
+<p id="loginMessage"></p>
+
+</div>
+
+</div>
+
+<script src="js/login.js"></script>
+
+</body>
+</html>

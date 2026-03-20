@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login & Dashboard | DocDost</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 90vh; flex-direction: column;}
+        
+        .admin-container { width: 100%; max-width: 1100px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        .login-box { max-width: 400px; margin: auto; text-align: center; }
+        .login-box input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;}
+        .login-box button { width: 95%; padding: 12px; background: #1e3a8a; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 10px;}
+        .login-box button:hover { background: #1d4ed8; }
+        .error-msg { color: red; margin-top: 10px; display: none; font-weight: bold;}
+
+        h1 { color: #1e3a8a; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px;}
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; font-size: 14px; }
+        th { background-color: #1e3a8a; color: white; font-weight: bold; }
+        tr:hover { background-color: #f1f5f9; cursor: pointer; }
+        
+        .back-btn { display: inline-block; margin-bottom: 20px; padding: 10px 15px; background: #2563eb; color: white; text-decoration: none; border-radius: 5px; float: left;}
+        .back-btn:hover { background: #1d4ed8; }
+        .logout-btn { display: inline-block; margin-bottom: 20px; padding: 10px 15px; background: #dc2626; color: white; text-decoration: none; border-radius: 5px; float: right; cursor: pointer; border:none; font-size:16px;}
+        .logout-btn:hover { background: #b91c1c; }
+    </style>
+</head>
+<body>
+
+    <div id="loginSection" class="admin-container login-box">
+        <a href="index.html" class="back-btn" style="float:none;">⬅ Back to Home</a>
+        <h2>🔒 Admin Login</h2>
+        <p>Please enter your credentials to access the dashboard.</p>
+        <input type="text" id="adminUser" placeholder="Username">
+        <input type="password" id="adminPass" placeholder="Password">
+        <button onclick="checkLogin()">Login to Dashboard</button>
+        <p id="errorMsg" class="error-msg">❌ Invalid Username or Password!</p>
+    </div>
+
+    <div id="dashboardSection" class="admin-container" style="display: none;">
+        <div style="overflow: hidden;">
+            <a href="index.html" class="back-btn">⬅ Back to Home</a>
+            <button class="logout-btn" onclick="logoutAdmin()">Logout 🚪</button>
+        </div>
+        <h1>🏥 Doctor & Admin Dashboard</h1>
+        <p style="text-align:center; color:#64748b;">All patient appointments from the database are listed below.</p>
+
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient Name</th>
+                        <th>Phone</th>
+                        <th>Location</th>
+                        <th>Doctor Selected</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Problem</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTableBody">
+                    <tr><td colspan="8" style="text-align:center;">Loading appointments...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function checkLogin() {
+            let user = document.getElementById("adminUser").value;
+            let pass = document.getElementById("adminPass").value;
+
+            // Username aur Password
+            let correctUser = "harsh";
+            let correctPass = "harsh123";
+
+            if (user === correctUser && pass === correctPass) {
+                document.getElementById("loginSection").style.display = "none";
+                document.getElementById("dashboardSection").style.display = "block";
+                fetchDatabaseData();
+            } else {
+                document.getElementById("errorMsg").style.display = "block";
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById("adminUser").value = "";
+            document.getElementById("adminPass").value = "";
+            document.getElementById("errorMsg").style.display = "none";
+            
+            document.getElementById("dashboardSection").style.display = "none";
+            document.getElementById("loginSection").style.display = "block";
+        }
+
+        function fetchDatabaseData() {
+            fetch("http://localhost:8080/api/getAppointments")
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById("adminTableBody");
+                    tableBody.innerHTML = ""; 
+
+                    if(data.length === 0) {
+                        tableBody.innerHTML = "<tr><td colspan='8' style='text-align:center;'>No appointments booked yet!</td></tr>";
+                        return;
+                    }
+
+                    data.forEach(appointment => {
+                        let phoneNum = appointment.phone ? appointment.phone : "N/A";
+                        let loc = appointment.location && appointment.location !== "null" ? appointment.location : "N/A";
+
+                        const row = `<tr>
+                            <td><b>#${appointment.id}</b></td>
+                            <td>${appointment.patientName}</td>
+                            <td>${phoneNum}</td>
+                            <td>📍 ${loc}</td>
+                            <td style="color:#2563eb; font-weight:bold;">${appointment.doctorName}</td>
+                            <td>${appointment.date}</td>
+                            <td>${appointment.time}</td>
+                            <td>${appointment.problem}</td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    document.getElementById("adminTableBody").innerHTML = "<tr><td colspan='8' style='text-align:center; color:red;'>❌ Failed to load data. Is Java Server running?</td></tr>";
+                });
+        }
+    </script>
+</body>
+</html>
